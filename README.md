@@ -86,7 +86,7 @@ npm start
 5. Open:
 
 ```text
-http://localhost:3000
+https://github.com/biradarneha16/gramkavach.git
 ```
 
 ## PWA Install
