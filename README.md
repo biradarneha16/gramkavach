@@ -2,6 +2,8 @@
 
 GRAMKAVACH is a React prototype for suspicious bank-account access alerts. It focuses on:
 
+Live demo: https://gramkavach.vercel.app
+
 - instant pop-up alerts when access or bank-link activity is detected
 - SMS notifications to the registered phone
 - a three-step citizen verification flow
