@@ -1,0 +1,17 @@
+{
+  "name": "GRAMKAVACH",
+  "short_name": "GRAMKAVACH",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#081815",
+  "theme_color": "#0f241f",
+  "description": "Instant suspicious account access alerts with a rural-first safety workflow.",
+  "icons": [
+    {
+      "src": "/shield.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
