@@ -1,5 +1,6 @@
 import { startTransition, useDeferredValue, useEffect, useState } from "react";
 import { AlertModal } from "./components/AlertModal";
+import { AuthScreen } from "./components/AuthScreen";
 import { ProtectionDashboard } from "./components/ProtectionDashboard";
 import { RegistrationForm } from "./components/RegistrationForm";
 import { ThreatSimulator } from "./components/ThreatSimulator";
@@ -54,12 +55,28 @@ export default function App() {
   const [profile, setProfile] = useLocalState(STORAGE_KEYS.profile, defaultProfile);
   const [events, setEvents] = useLocalState<SecurityEvent[]>(STORAGE_KEYS.events, []);
   const [offlineDemoMode, setOfflineDemoMode] = useLocalState(STORAGE_KEYS.offlineDemoMode, false);
+  const [authenticated, setAuthenticated] = useLocalState(STORAGE_KEYS.session, false);
   const [activeEventId, setActiveEventId] = useState<string | null>(null);
   const [snoozedEventIds, setSnoozedEventIds] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const network = useNetworkStatus();
   const effectiveOnline = network.isOnline && !offlineDemoMode;
   const deferredSearchTerm = useDeferredValue(searchTerm);
+
+  function handleRegister(nextProfile: ResidentProfile) {
+    setProfile(nextProfile);
+    setAuthenticated(true);
+    return null;
+  }
+
+  function handleLogin(phone: string, pin: string) {
+    if (!profile.fullName || phone !== profile.phone || pin !== profile.guardianPin) {
+      return "Phone number or guardian PIN is incorrect.";
+    }
+
+    setAuthenticated(true);
+    return null;
+  }
 
   const activeEvent = events.find((event) => event.id === activeEventId) ?? null;
   const pendingEvents = events.filter((event) => event.status === "pending");
@@ -129,6 +146,10 @@ export default function App() {
       });
     });
   }, [effectiveOnline, profile, queuedEvents, setEvents]);
+
+  if (!authenticated) {
+    return <AuthScreen onLogin={handleLogin} onRegister={handleRegister} />;
+  }
 
   function updateProfile<K extends keyof ResidentProfile>(field: K, value: ResidentProfile[K]) {
     setProfile((currentProfile) => ({
@@ -269,6 +290,7 @@ export default function App() {
           queuedCount={queuedEvents.length}
           setOfflineDemoMode={setOfflineDemoMode}
           supabaseReady={Boolean(supabase)}
+          onLogout={() => setAuthenticated(false)}
         />
 
         <section className="split-shell">
@@ -322,9 +344,7 @@ export default function App() {
                 onChange={(event) => setSearchTerm(event.target.value)}
               />
             </label>
-            <p>
-              Prototype note: browser apps cannot independently watch real bank accounts or send offline SMS. Production needs bank APIs plus a native Android wrapper or telecom gateway.
-            </p>
+              <p>Alerts from bank access, account linking, and device sensors appear here. The simulator below demonstrates the same workflow before a real bank integration is connected.</p>
           </div>
 
           <div className="ledger-list">
