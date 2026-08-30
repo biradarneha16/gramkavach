@@ -9,6 +9,7 @@ interface ProtectionDashboardProps {
   setOfflineDemoMode: (value: boolean) => void;
   supabaseReady: boolean;
   offlineDemoMode: boolean;
+  onLogout: () => void;
 }
 
 export function ProtectionDashboard({
@@ -19,7 +20,8 @@ export function ProtectionDashboard({
   protectionScore,
   queuedCount,
   setOfflineDemoMode,
-  supabaseReady
+  supabaseReady,
+  onLogout
 }: ProtectionDashboardProps) {
   return (
     <section className="panel dashboard-shell">
@@ -35,6 +37,7 @@ export function ProtectionDashboard({
               Instant pop-up alerts, registered-phone SMS, and escalation logic for suspicious account access.
             </p>
           </div>
+          <button className="logout-button" onClick={onLogout} type="button">Log out</button>
         </div>
 
         <div className="hero-metrics">
